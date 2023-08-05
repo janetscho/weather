@@ -88,10 +88,10 @@ def main():
             # methods to create and draw the graph
             def create_graph(curr, temps):    
                 plt.plot(curr, temps, color = 'blue', marker = 'o')
+                plt.fill_between(curr, temps, color = 'lightblue', alpha = 0.5)
                 plt.xlabel('Dates')
                 plt.ylabel('Temperatures')
                 plt.title('Weather Forecast')
-                plt.grid(True)
                 return plt.gcf()
             
             def draw_fig(canvas, figure):
