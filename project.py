@@ -85,11 +85,12 @@ def main():
             print(curr_dates)
             print(temperatures)
             
+            # methods to create and draw the graph
             def create_graph(curr, temps):    
                 plt.plot(curr, temps, color = 'blue', marker = 'o')
                 plt.xlabel('Dates')
                 plt.ylabel('Temperatures')
-                plt.title('Forecast for the next couple days')
+                plt.title('Weather Forecast')
                 plt.grid(True)
                 return plt.gcf()
             
@@ -100,7 +101,6 @@ def main():
                 return fig
             
             figure_layout = [
-                [sg.Text('Weather Forecast')],
                 [sg.Canvas(key= '-CANVAS-')],
             ]
             
