@@ -72,8 +72,10 @@ def main():
             curr_dates = []
             temperatures = []
             for day in check_date.values():
-                # removing unnecessary portion of time
+                # removing time and year
                 date = day['dt_txt'].split()[0]
+                date = '-'.join(date.split('-')[1:])
+                
                 temp = day['main']['temp']
                 info = day['weather'][0]['description']
                 daily_weather.append([sg.Text(date), sg.Text(temp), sg.Text(info)])
@@ -88,10 +90,13 @@ def main():
             # methods to create and draw the graph
             def create_graph(curr, temps):    
                 plt.plot(curr, temps, color = 'blue', marker = 'o')
+                plt.figure(figsize=(4, 4))
                 plt.fill_between(curr, temps, color = 'lightblue', alpha = 0.5)
                 plt.xlabel('Dates')
-                plt.ylabel('Temperatures')
-                plt.title('Weather Forecast')
+                plt.ylabel('Temperatures (F)')
+                plt.tight_layout()
+                #plt.savefig('temp.png', transparent= True)
+                #plt.title('Weather Forecast')
                 return plt.gcf()
             
             def draw_fig(canvas, figure):
@@ -102,6 +107,11 @@ def main():
             
             figure_layout = [
                 [sg.Canvas(key= '-CANVAS-')],
+            ]
+            
+            # to do a new location
+            restart_layout = [
+                [sg.Button('New location', size = (10, 1))]
             ]
             
             # UI
@@ -123,15 +133,18 @@ def main():
                     [sg.Text('' * 40)],
                     [sg.Push(), sg.Column(layout_column2, element_justification = 'center'), sg.Push()],
                     [sg.Text('' * 40)],
-                    [sg.Push(), sg.Column(daily_weather, element_justification= 'center'), sg.Push()],
+                    [sg.Push(), sg.Column(daily_weather, element_justification= 'center'), sg.Push(), sg.Column(figure_layout, element_justification='center'), sg.Push()],
                     [sg.Text('' * 40)],
-                    [sg.Push(), sg.Column(figure_layout, element_justification='center'), sg.Push()],
+                    #[sg.Push(), sg.Column(figure_layout, element_justification='center'), sg.Push()],
+                    [sg.Push(), sg.Column(restart_layout, element_justification='center'), sg.Push()],
                     [sg.VPush()]]
             
             window.close()
 
             window2 = sg.Window(title2, layout2, finalize= True, element_justification= 'center')
             draw_fig(window2['-CANVAS-'].TKCanvas, create_graph(curr_dates, temperatures))
+            window2.refresh()
+            window2.move_to_center()
 
             while True:
                 
@@ -139,6 +152,10 @@ def main():
                 
                 if event2 == sg.WIN_CLOSED or event2 == 'Exit':
                     break
+                
+                if event2 == 'New location':
+                    window2.close()
+                    main()
 
                 
             window2.close()
