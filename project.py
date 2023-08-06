@@ -1,7 +1,11 @@
 import requests
 import datetime
+import pytz
 import PySimpleGUI as sg
 import matplotlib.pyplot as plt
+from geopy.geocoders import Nominatim
+from timezonefinder import TimezoneFinder
+from datetime import datetime
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 api = 'ca1ae4256fbd6a8644510160cf40fb39'
@@ -83,14 +87,11 @@ def main():
                 # for line graph
                 curr_dates.append(date)
                 temperatures.append(float(temp))
-                
-            print(curr_dates)
-            print(temperatures)
             
             # methods to create and draw the graph
             def create_graph(curr, temps):    
                 plt.plot(curr, temps, color = 'blue', marker = 'o')
-                plt.figure(figsize=(4, 4))
+                plt.figure(figsize=(4, 3))
                 plt.fill_between(curr, temps, color = 'lightblue', alpha = 0.5)
                 plt.xlabel('Dates')
                 plt.ylabel('Temperatures (F)')
@@ -114,14 +115,22 @@ def main():
                 [sg.Button('New location', size = (10, 1))]
             ]
             
+            # finds actual timezone for the location
+            geolocator = Nominatim(user_agent='yessir')
+            geo_location = geolocator.geocode(location)
+            time_obj = TimezoneFinder()
+            location_result = time_obj.timezone_at(lng = geo_location.longitude, lat = geo_location.latitude)
+            IST = pytz.timezone(location_result)
+            location_time = datetime.now(IST)
+            
             # UI
             title2 = [
                 [sg.Text(location, justification = 'center', font = (60))],
-                [sg.Text(datetime.datetime.now().date(), justification= 'center', font = (40))]
+                [sg.Text(location_time.strftime('%Y-%m-%d %H:%M:%S'), justification= 'center', font = (40))]
             ]
 
             layout_column2 = [
-                [sg.Text(f'Temperature: {temp} F', font = (40))],
+                [sg.Text(f'Temperature: {temp} F', font = (60))],
                 [sg.Text(f'Feels like {like} F', font = (40))],
                 [sg.Text(f'Humidity: {humidity}%', font = (40))],
                 [sg.Text(f'Wind: {wind} mph', font = (40))],
@@ -130,7 +139,7 @@ def main():
             
             layout2 = [[sg.Push()],
                     [sg.Push(), sg.Column(title2, element_justification = 'center', pad = (20, 10)), sg.Push()],
-                    [sg.Text('' * 40)],
+                    #[sg.Text('' * 40)],
                     [sg.Push(), sg.Column(layout_column2, element_justification = 'center'), sg.Push()],
                     [sg.Text('' * 40)],
                     [sg.Push(), sg.Column(daily_weather, element_justification= 'center'), sg.Push(), sg.Column(figure_layout, element_justification='center'), sg.Push()],
@@ -172,4 +181,6 @@ https://openweathermap.org/current#data
 https://openweathermap.org/forecast5#list
 https://github.com/jsubroto/5-day-weather-forecast/blob/master/five_day_weather_forecast.py
 https://www.youtube.com/watch?v=XpKtgNasiBw
+https://github.com/PySimpleGUI/PySimpleGUI/issues/5802
+https://www.geeksforgeeks.org/get-current-time-in-different-timezone-using-python/
 '''
