@@ -1,3 +1,4 @@
+import io
 import requests
 import datetime
 import pytz
@@ -7,6 +8,9 @@ from geopy.geocoders import Nominatim
 from timezonefinder import TimezoneFinder
 from datetime import datetime
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import calendar
+from collections import defaultdict
+import numpy as np
 
 api = 'ca1ae4256fbd6a8644510160cf40fb39'
 
@@ -54,6 +58,8 @@ def main():
             description = data['weather'][0]['description']
             temp = data['main']['temp']
             like = data['main']['feels_like']
+            # icon_code1 = data['weather'][0]['icon']
+            # icon_url1 = f'https://openweathermap.org/img/wn/{icon_code1}@2x.png'
             
             forecast_url = f'https://api.openweathermap.org/data/2.5/forecast?q={location}&appid={api}&units=imperial'
             res = requests.get(forecast_url)
@@ -72,39 +78,82 @@ def main():
                 [sg.Text("Daily Weather Forcast", font = 30)],
             ]
                     
-            # secondary portion of weather
+            # Daily weather
             curr_dates = []
             temperatures = []
+            day_of_week_counts = defaultdict(int)
             for day in check_date.values():
-                # removing time and year
-                date = day['dt_txt'].split()[0]
-                date = '-'.join(date.split('-')[1:])
+                # Extracting date and time
+                dt_txt = day['dt_txt']
+                date_obj = datetime.strptime(dt_txt, "%Y-%m-%d %H:%M:%S")
                 
+                # Getting day of the week (Monday, Tuesday, etc.)
+                day_of_week = date_obj.strftime("%A")
+                
+                # Update day of the week count
+                day_of_week_counts[day_of_week] += 1
+
+                # Extracting the date without the year
+                date = dt_txt.split()[0]
+                date = '-'.join(date.split('-')[1:])
+
                 temp = day['main']['temp']
                 info = day['weather'][0]['description']
-                daily_weather.append([sg.Text(date), sg.Text(temp), sg.Text(info)])
+                # icon_code2 = day['weather'][0]['icon']
+                # icon_url2 = f'https://openweathermap.org/img/wn/{icon_code2}@2x.png'
+                
+
+                daily_weather.append([
+                    sg.Text(day_of_week, font=("Helvetica", 14), size=(11, 1), justification='left'),
+                    sg.Text(f"{calendar.month_abbr[int(date.split('-')[0])]} {date.split('-')[1]}", font=("Helvetica", 14), size=(8, 1), justification='left'),
+                    sg.Text(temp, font=("Helvetica", 14), size=(6, 1), justification='left'),
+                    sg.Text(info.title(), font=("Helvetica", 14), size=(15, 1), justification='left'), 
+                ])
+
                 
                 # for line graph
                 curr_dates.append(date)
                 temperatures.append(float(temp))
-            
-            # methods to create and draw the graph
+
             def create_graph(curr, temps):    
-                plt.plot(curr, temps, color = 'blue', marker = 'o')
-                plt.figure(figsize=(4, 3))
-                plt.fill_between(curr, temps, color = 'lightblue', alpha = 0.5)
+                plt.figure(figsize=(4, 3))  # Set a larger figure size for better visibility
+                
+                # Plot the data with blue line and red dots
+                plt.plot(curr, temps, color='red', marker='o', linestyle='-', linewidth=2, markersize=8, label='Temperature')
+                
+                # Add temperature values above each data point
+                for date, temp in zip(curr, temps):
+                    plt.text(date, temp + 1, f'{temp:.1f}', ha='center', va='bottom', fontsize=10)
+
+                # Fill the area under the curve with light blue
+                plt.fill_between(curr, temps, color='lightblue', alpha=0.5)
+                
                 plt.xlabel('Dates')
                 plt.ylabel('Temperatures (F)')
+                
+                # Add faint dashed gridlines for x-axis
+                plt.grid(True, linestyle='--', linewidth=0.5, alpha=0.7, axis='x')
+                
+                y_min = min(temps) - 10 
+                y_max = max(temps) + 10
+                
+                # Set y-axis limits
+                plt.ylim(y_min, y_max)
+                
+                # Create custom y-axis ticks every ten degrees
+                y_ticks = np.arange(np.floor(y_min / 5) * 5, np.ceil(y_max / 5) * 5 + 1, 5)                
+                plt.yticks(y_ticks)
+
                 plt.tight_layout()
-                #plt.savefig('temp.png', transparent= True)
-                #plt.title('Weather Forecast')
+                
                 return plt.gcf()
-            
+
             def draw_fig(canvas, figure):
                 fig = FigureCanvasTkAgg(figure, canvas)
                 fig.draw()
-                fig.get_tk_widget().pack(side= 'top', fill= 'both', expand= 1)
+                fig.get_tk_widget().pack(side='top', fill='both', expand=1)
                 return fig
+
             
             figure_layout = [
                 [sg.Canvas(key= '-CANVAS-')],
@@ -134,7 +183,7 @@ def main():
                 [sg.Text(f'Feels like {like} F', font = (40))],
                 [sg.Text(f'Humidity: {humidity}%', font = (40))],
                 [sg.Text(f'Wind: {wind} mph', font = (40))],
-                [sg.Text(f'Description: {description}', font = (40))],
+                [sg.Text(f'Description: {description.title()}', font = (40))],
             ]
             
             layout2 = [[sg.Push()],
@@ -170,8 +219,7 @@ def main():
             window2.close()
     
 if __name__ == '__main__':
-    main()
-    
+    main()    
     
 '''
 REFERENCE:
