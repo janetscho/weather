@@ -36,12 +36,20 @@ The app fetches weather data from the OpenWeatherMap API and presents it in a us
      - The app will fetch weather data and display current conditions, a five-day forecast, and a temperature graph
      - The local time of the specified city will be displayed
 
+
 4. REFERENCES:
-https://stackoverflow.com/questions/61852225/align-button-to-the-center-of-the-window-using-pysimplegui
-https://www.instructables.com/Get-Weather-Data-Using-Python-and-Openweather-API/
-https://openweathermap.org/current#data
-https://openweathermap.org/forecast5#list
-https://github.com/jsubroto/5-day-weather-forecast/blob/master/five_day_weather_forecast.py
-https://www.youtube.com/watch?v=XpKtgNasiBw
-https://github.com/PySimpleGUI/PySimpleGUI/issues/5802
-https://www.geeksforgeeks.org/get-current-time-in-different-timezone-using-python/
+
+Stack Overflow. "Align Button to the Center of the Window Using PySimpleGUI." Stack Overflow, 25 May 2020, https://stackoverflow.com/questions/61852225/align-button-to-the-center-of-the-window-using-pysimplegui.
+
+"Get Weather Data Using Python and Openweather API." Instructables, https://www.instructables.com/Get-Weather-Data-Using-Python-and-Openweather-API/.
+"Current Weather Data." OpenWeather, https://openweathermap.org/current#data.
+
+"5 Day / 3 Hour Forecast." OpenWeather, https://openweathermap.org/forecast5#list.
+
+jsubroto. "5-day-weather-forecast." GitHub, 2023, https://github.com/jsubroto/5-day-weather-forecast/blob/master/five_day_weather_forecast.py.
+
+CodeWithChris. "Python Weather App Tutorial - Access Web Data Using an API." YouTube, 16 Apr. 2021, https://www.youtube.com/watch?v=XpKtgNasiBw.
+
+PySimpleGUI. "Issue #5802: Align Center Not Working on Button Element." GitHub, 12 Dec. 2020, https://github.com/PySimpleGUI/PySimpleGUI/issues/5802.
+
+Rajput, Ayush. "Get Current Time in Different Timezone Using Python." GeeksforGeeks, 10 Oct. 2020, https://www.geeksforgeeks.org/get-current-time-in-different-timezone-using-python/.
