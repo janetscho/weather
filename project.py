@@ -66,6 +66,8 @@ def main():
                 
                 if data['cod'] == '404':
                     main()
+                if values['-INPUT-'] == '':
+                    main()
                 
             # API request exceptions
             except requests.exceptions.RequestException as e:
