@@ -23,6 +23,12 @@ def main():
         [sg.Button('Enter', bind_return_key = True, size = (10, 1))]
     ]
     
+    restart_time = [
+        [sg.Text('Sorry, that location was not found. Please try again.', justification='center', font = ('Helvetica', 14))],
+        [sg.Input(key = '-INPUT-', size = (30, 30))],
+        [sg.Button('Enter', bind_return_key = True, size = (10, 1))]
+    ]
+    
     title = [
         [sg.Text("WEATHER APP",justification = 'center', font = ('Helvetica', 20))]
         ]
@@ -32,6 +38,11 @@ def main():
               [sg.Text('' * 40)],
               [sg.Push(), sg.Column(layout_column, element_justification = 'center'), sg.Push()],
               [sg.VPush()]]
+    
+    # to do a new location
+    restart_layout = [
+        [sg.Button('New location', size = (10, 1))]
+    ]
     
     window = sg.Window('Weather App', layout)
     
@@ -43,14 +54,23 @@ def main():
         
         # if location is provided
         if event == 'Enter':
-            location = values['-INPUT-']
-            window['-INPUT-'].update('')
-            
-            # calling API request
-            url = f'https://api.openweathermap.org/data/2.5/weather?q={location}&appid={api}&units=imperial'
+            try:
+                location = values['-INPUT-']
+                window['-INPUT-'].update('')
+                
+                # calling API request
+                url = f'https://api.openweathermap.org/data/2.5/weather?q={location}&appid={api}&units=imperial'
 
-            res = requests.get(url)
-            data = res.json()
+                res = requests.get(url)
+                data = res.json()
+                
+                if data['cod'] == '404':
+                    main()
+                
+            # API request exceptions
+            except requests.exceptions.RequestException as e:
+                raise SystemExit(e)
+            
             
             # main weather information
             humidity = data['main']['humidity']
