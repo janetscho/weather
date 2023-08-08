@@ -18,13 +18,13 @@ def main():
     
     # creating starting page / UI
     layout_column = [
-        [sg.Text('Search by city', justification = 'center', font = (30))],
+        [sg.Text('Search by city', justification = 'center', font = ('Helvetica', 14))],
         [sg.Input(key = '-INPUT-', size = (30, 30))],
         [sg.Button('Enter', bind_return_key = True, size = (10, 1))]
     ]
     
     title = [
-        [sg.Text("WEATHER APP",justification = 'center', font = (60))]
+        [sg.Text("WEATHER APP",justification = 'center', font = ('Helvetica', 20))]
         ]
     
     layout = [[sg.Push()],
@@ -75,7 +75,7 @@ def main():
                     check_date[date] = day
                     
             daily_weather = [
-                [sg.Text("Daily Weather Forcast", font = 30)],
+                [sg.Text("Daily Weather Forcast", font = ('Helvetica', 16))],
             ]
                     
             # Daily weather
@@ -174,16 +174,16 @@ def main():
             
             # UI
             title2 = [
-                [sg.Text(location, justification = 'center', font = (60))],
-                [sg.Text(location_time.strftime('%Y-%m-%d %H:%M:%S'), justification= 'center', font = (40))]
+                [sg.Text(location, justification = 'center', font = ('Helvetica', 20))],
+                [sg.Text(location_time.strftime('%Y-%m-%d %H:%M:%S'), justification= 'center', font = ('Helvetica', 12))]
             ]
 
             layout_column2 = [
-                [sg.Text(f'Temperature: {temp} F', font = (60))],
-                [sg.Text(f'Feels like {like} F', font = (40))],
-                [sg.Text(f'Humidity: {humidity}%', font = (40))],
-                [sg.Text(f'Wind: {wind} mph', font = (40))],
-                [sg.Text(f'Description: {description.title()}', font = (40))],
+                [sg.Text(f'Temperature: {temp} F', font = ('Helvetica', 20))],
+                [sg.Text(f'Feels like {like} F', font = ('Helvetica', 20))],
+                [sg.Text(f'Humidity: {humidity}%', font = ('Helvetica', 12))],
+                [sg.Text(f'Wind: {wind} mph', font = ('Helvetica', 12))],
+                [sg.Text(f'Description: {description.title()}', font = ('Helvetica', 12))],
             ]
             
             layout2 = [[sg.Push()],
